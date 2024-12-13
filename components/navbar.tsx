@@ -43,14 +43,18 @@ export default function Navbar() {
           {links &&
             links?.map((link) => (
               <Link key={link.href} href={link.href} className="capitalize">
-                <li className="hover:bg-orange-500 font-medium p-2 rounded hover:text-white">{link.title}</li>
+                <li className="hover:bg-orange-500 font-medium p-2 rounded hover:text-white">
+                  {link.title}
+                </li>
               </Link>
             ))}
         </ul>
         <div className="space-x-3">
-          <Button>Login</Button>
+          <Button>
+            <Link href="/auth/sign-in">Login</Link>
+          </Button>
           <Button className="shadow" variant={"outline"}>
-            Sign Up
+            <Link href="/auth/sign-up">Sign Up</Link>
           </Button>
         </div>
       </nav>
