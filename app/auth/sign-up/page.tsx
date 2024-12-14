@@ -1,3 +1,6 @@
+"use client";
+
+import { newUser } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +12,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import React from "react";
+import { redirect } from "next/navigation";
+import React, { useActionState } from "react";
 
 export default function SignUp() {
+  const [state, action, isPending] = useActionState(newUser, null);
+
+  if (state?.message) {
+    alert(state.message);
+    redirect("/auth/login");
+  }
+  if (state?.error) {
+    alert(state.error);
+  }
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="container grid lg:grid-cols-2 gap-8 px-4">
@@ -34,26 +47,47 @@ export default function SignUp() {
         </div>
 
         {/* Separator */}
-        <div className="lg:hidden w-full h-[1px] bg-gray-300 my-6"></div>
+        {/* <div className="lg:hidden w-full h-[1px] bg-gray-300 my-6"></div> */}
 
         {/* Sign-Up Card */}
         <Card className="max-w-md w-full border shadow-lg mx-auto">
+          {/* General Errors */}
+          {state?.error && (
+            <span className="text-red-500 text-sm font-medium">
+              {state?.error}
+            </span>
+          )}
+          {/* Success Response */}
+          {state?.message && (
+            <span className="text-cyan-500 text-sm font-medium">
+              {state?.message}
+            </span>
+          )}
           <CardHeader className="text-center space-y-2">
-            <CardTitle className="text-2xl font-semibold">Sign Up</CardTitle>
+            <CardTitle className="text-2xl font-semibold">
+              {isPending ? "Processing..." : "Sign Up"}
+            </CardTitle>
             <CardDescription className="text-sm">
               Sign up and get exciting Real Estate Deals & Offers.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
-              <Input type="text" placeholder="Full Name" className="w-full" />
+            <form action={action} className="space-y-4">
+              <Input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                className="w-full"
+              />
               <Input
                 type="email"
+                name="email"
                 placeholder="Email Address"
                 className="w-full"
               />
               <Input
                 type="password"
+                name="password"
                 placeholder="Password"
                 className="w-full"
               />
@@ -74,7 +108,22 @@ export default function SignUp() {
                   </Link>
                 </label>
               </div>
-              <Button className="w-full">Sign Up</Button>
+              <Button type="submit" className="w-full">
+                {isPending ? "Processing..." : "Sign Up"}
+              </Button>
+              {state?.validationErrors && (
+                <>
+                  <p className="text-red-500 text-sm font-medium">
+                    {state.validationErrors.name}
+                  </p>
+                  <p className="text-red-500 text-sm font-medium">
+                    {state.validationErrors.email}
+                  </p>
+                  <p className="text-red-500 text-sm font-medium">
+                    {state.validationErrors.password}
+                  </p>
+                </>
+              )}
             </form>
           </CardContent>
           <CardFooter className="flex items-center justify-center">

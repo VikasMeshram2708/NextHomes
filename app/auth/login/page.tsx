@@ -1,6 +1,6 @@
 "use client";
 
-import { authLogin } from "@/actions/auth";
+// import { loginUser } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,15 +11,31 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import React, { useActionState } from "react";
+import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export default function SignIn() {
-  // interface state {
-  //   error: string;
-  //   message: string;
-  // }
-  const [state, loginAction, isPending] = useActionState(authLogin, null);
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  async function onLogin(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const res = await signIn("credentials", {
+      email: user.email,
+      password: user.password,
+      redirect: false,
+    });
+    if (res?.ok && res.status === 200) {
+      redirect("/");
+    } else {
+      alert(res?.error)
+    }
+  }
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -51,32 +67,49 @@ export default function SignIn() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={loginAction} className="space-y-4">
+            <form onSubmit={onLogin} className="space-y-4">
               <Input
-                // type="email"
+                type="email"
                 name="email"
+                value={user.email}
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    email: e.target.value,
+                  })
+                }
                 placeholder="Email Address"
                 className="w-full"
               />
-              {state?.validationError?.emailValidationError && (
-                <span className="text-red-500 font-bold text-sm">
-                  * {state?.validationError?.emailValidationError}
-                </span>
-              )}
+
               <Input
                 type="password"
                 name="password"
+                value={user.password}
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    password: e.target.value,
+                  })
+                }
                 placeholder="Password"
                 className="w-full"
               />
-              {state?.validationError?.passwordValidationError && (
-                <span className="text-red-500 font-bold text-sm">
-                  * {state?.validationError?.passwordValidationError}
-                </span>
-              )}
+
               <Button type="submit" className="w-full">
-                {isPending ? "Processing..." : "Login"}
+                Login
+                {/* {isPending ? "Processing..." : "Login"} */}
               </Button>
+              {/* {state?.validationErrors && (
+                <>
+                  <p className="text-red-500 text-sm font-medium">
+                    {state.validationErrors.email}
+                  </p>
+                  <p className="text-red-500 text-sm font-medium">
+                    {state.validationErrors.password}
+                  </p>
+                </>
+              )} */}
             </form>
           </CardContent>
           <CardFooter className="flex items-center justify-center">
