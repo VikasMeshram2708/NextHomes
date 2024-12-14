@@ -51,7 +51,7 @@ export default function Navbar() {
         </ul>
         <div className="space-x-3">
           <Button>
-            <Link href="/auth/sign-in">Login</Link>
+            <Link href="/auth/login">Login</Link>
           </Button>
           <Button className="shadow" variant={"outline"}>
             <Link href="/auth/sign-up">Sign Up</Link>
