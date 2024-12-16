@@ -1,8 +1,12 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
+import { signOut, useSession } from "next-auth/react";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
+  const { status } = useSession();
   const links = [
     {
       title: "Buy",
@@ -43,19 +47,29 @@ export default function Navbar() {
           {links &&
             links?.map((link) => (
               <Link key={link.href} href={link.href} className="capitalize">
-                <li className="hover:bg-orange-500 font-medium p-2 rounded hover:text-white">
+                <li className="hover:bg-orange-500 hover:duration-300 font-medium p-2 rounded hover:text-white">
                   {link.title}
                 </li>
               </Link>
             ))}
         </ul>
         <div className="space-x-3">
-          <Button>
-            <Link href="/auth/login">Login</Link>
-          </Button>
-          <Button className="shadow" variant={"outline"}>
-            <Link href="/auth/sign-up">Sign Up</Link>
-          </Button>
+          {status === "loading" ? (
+            <Button type="button">Loading...</Button>
+          ) : status === "authenticated" ? (
+            <Button
+              onClick={() => signOut()}
+              type="button"
+              variant={"destructive"}
+            >
+              <LogOut />
+              <span>Logout</span>
+            </Button>
+          ) : (
+            <Button className="shadow" variant={"outline"}>
+              <Link href="/auth/sign-up">Sign Up</Link>
+            </Button>
+          )}
         </div>
       </nav>
     </header>

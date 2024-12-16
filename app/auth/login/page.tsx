@@ -1,6 +1,5 @@
 "use client";
 
-// import { loginUser } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,9 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
-// import { redirect } from "next/navigation";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { redirect } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export default function SignIn() {
   const [user, setUser] = useState({
@@ -23,30 +21,20 @@ export default function SignIn() {
     password: "",
   });
 
-  const pathName = usePathname();
-
-  const onLogin = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const res = await signIn("credentials", {
-        email: user.email,
-        password: user.password,
-        redirect: false,
-      });
-      if (res?.ok && res.status === 200) {
-        alert("Logged In");
-      } else {
-        alert(res?.error);
-      }
-    },
-    [user]
-  );
-
-  useEffect(() => {
-    if (pathName !== "/auth/login") {
-      redirect("/");
+  const onLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await signIn("credentials", {
+      email: user.email,
+      password: user.password,
+      redirect: false,
+    });
+    if (res?.ok && res.status === 200) {
+      alert("Logged In");
+      return redirect("/");
+    } else {
+      return alert(res?.error);
     }
-  }, [pathName]);
+  };
 
   return (
     <div className="h-screen flex items-center justify-center">
@@ -109,18 +97,7 @@ export default function SignIn() {
 
               <Button type="submit" className="w-full">
                 Login
-                {/* {isPending ? "Processing..." : "Login"} */}
               </Button>
-              {/* {state?.validationErrors && (
-                <>
-                  <p className="text-red-500 text-sm font-medium">
-                    {state.validationErrors.email}
-                  </p>
-                  <p className="text-red-500 text-sm font-medium">
-                    {state.validationErrors.password}
-                  </p>
-                </>
-              )} */}
             </form>
           </CardContent>
           <CardFooter className="flex items-center justify-center">

@@ -4,4 +4,4 @@
 
 ### Test Users
 
-- email: [test1@gmail.com], password:[Test@1]
+- email: [test1@gmail.com], password:[test1]
