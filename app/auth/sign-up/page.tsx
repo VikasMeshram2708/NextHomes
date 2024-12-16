@@ -12,19 +12,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import React, { useActionState } from "react";
 
 export default function SignUp() {
   const [state, action, isPending] = useActionState(newUser, null);
-
-  if (state?.message) {
-    alert(state.message);
-    redirect("/auth/login");
-  }
-  if (state?.error) {
-    alert(state.error);
-  }
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="container grid lg:grid-cols-2 gap-8 px-4">

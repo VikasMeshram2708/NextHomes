@@ -13,9 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 // import { redirect } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 
 export default function SignIn() {
   const [user, setUser] = useState({
@@ -23,19 +23,30 @@ export default function SignIn() {
     password: "",
   });
 
-  async function onLogin(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const res = await signIn("credentials", {
-      email: user.email,
-      password: user.password,
-      redirect: false,
-    });
-    if (res?.ok && res.status === 200) {
+  const pathName = usePathname();
+
+  const onLogin = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const res = await signIn("credentials", {
+        email: user.email,
+        password: user.password,
+        redirect: false,
+      });
+      if (res?.ok && res.status === 200) {
+        alert("Logged In");
+      } else {
+        alert(res?.error);
+      }
+    },
+    [user]
+  );
+
+  useEffect(() => {
+    if (pathName !== "/auth/login") {
       redirect("/");
-    } else {
-      alert(res?.error)
     }
-  }
+  }, [pathName]);
 
   return (
     <div className="h-screen flex items-center justify-center">

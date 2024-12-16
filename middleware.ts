@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
-  const publicPaths = new Set(["/auth/signin", "/auth/sign-up"]);
+  const publicPaths = new Set(["/auth/login", "/auth/sign-up"]);
   const isPublicPath = publicPaths.has(path);
 
   if (!token && !isPublicPath) {
@@ -27,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/", "/auth/login", "/auth/sign-up"],
 };
